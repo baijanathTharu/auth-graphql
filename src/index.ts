@@ -1,11 +1,12 @@
-import express, { Application, Request, Response, NextFunction } from 'express';
+import express, { Application, Request, Response } from 'express';
 
 const app: Application = express();
 const port = 5000;
 
-app.use('/', (req: Request, res: Response, next: NextFunction) => {
+app.use('/', (req: Request, res: Response) => {
   res.status(200).send({ data: 'Hello World!' });
 });
 
 // Start server
+// eslint-disable-next-line no-console
 app.listen(port, () => console.log(`Server is listening on port ${port}!`));
