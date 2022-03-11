@@ -10,3 +10,5 @@ generates:
           content: '/* eslint-disable */'
       - typescript
       - typescript-resolvers
+    config:
+      contextType: ../types/context#ResolverContext

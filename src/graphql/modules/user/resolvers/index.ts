@@ -1,4 +1,6 @@
-const users = [
+import { UserModule } from '../generated-types/module-types';
+
+const users: UserModule.User[] = [
   {
     id: 1,
     name: 'John Doe',
@@ -7,10 +9,8 @@ const users = [
   },
 ];
 
-export const userResolvers = {
+export const userResolvers: UserModule.Resolvers = {
   Query: {
-    users: async () => {
-      return users;
-    },
+    users: () => users,
   },
 };

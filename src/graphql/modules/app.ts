@@ -1,4 +1,3 @@
-/* eslint-disable import/extensions */
 import { createApplication } from 'graphql-modules';
 import { UserModule } from './user';
 
