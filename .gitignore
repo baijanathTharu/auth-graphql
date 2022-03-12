@@ -4,3 +4,5 @@ build
 # generated types
 src/graphql/generated-types
 src/graphql/modules/**/generated-types
+
+.env

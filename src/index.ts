@@ -1,8 +1,9 @@
+import 'dotenv/config';
 import express, { Application, Request, Response } from 'express';
 import { graphQLServer } from './graphql';
 
 const app: Application = express();
-const port = 5000;
+const port = process.env.PORT || 5000;
 
 app.use('/rest', (req: Request, res: Response) => {
   res.status(200).send({ data: 'Hello World!' });
