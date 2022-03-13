@@ -2,7 +2,7 @@
   "name": "auth-graphql",
   "version": "1.0.0",
   "description": "",
-  "main": "index.ts",
+  "main": "./src/index.ts",
   "type": "commonjs",
   "scripts": {
     "start": "nodemon",
@@ -34,6 +34,7 @@
     "prisma": "^3.10.0",
     "ts-node": "^10.7.0",
     "ts-node-dev": "^1.1.8",
+    "tsconfig-paths": "^3.13.0",
     "typescript": "^4.6.2"
   },
   "dependencies": {

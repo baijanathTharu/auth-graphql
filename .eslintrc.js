@@ -16,20 +16,16 @@ module.exports = {
   },
   plugins: ['@typescript-eslint'],
   rules: {
-    'import/extensions': [
-      'error',
-      'ignorePackages',
-      {
-        js: 'never',
-        ts: 'never',
-      },
-    ],
+    'import/extensions': 'off',
     'import/prefer-default-export': 'off',
   },
   settings: {
     'import/resolver': {
+      typescript: {
+        project: './tsconfig.json',
+      },
       node: {
-        extensions: ['.js', '.ts'],
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
       },
     },
   },
