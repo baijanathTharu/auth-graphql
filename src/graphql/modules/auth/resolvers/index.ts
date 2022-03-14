@@ -1,19 +1,33 @@
+import { Prisma } from '@prisma/client';
 import { AuthModule } from '../generated-types/module-types';
-import { getUserById } from '../services';
+import { createUser, loginUser } from '../services';
 
 export const authResolvers: AuthModule.Resolvers = {
   Mutation: {
     signUp: async (_, { signUpInput }) => {
-      const user = await getUserById(1);
-      // eslint-disable-next-line no-console
-      console.log('user', user);
-      return {
-        done: true,
-      };
+      try {
+        const created = await createUser(signUpInput);
+
+        if (!created) {
+          throw new Error('Something went wrong while saving data');
+        }
+
+        return {
+          done: true,
+        };
+      } catch (e) {
+        if (e instanceof Prisma.PrismaClientKnownRequestError) {
+          if (e.code === 'P2002') {
+            throw new Error('User already exists');
+          }
+        }
+
+        throw new Error(e as string);
+      }
     },
-    login: (_, { loginInput }) => {
-      // eslint-disable-next-line no-console
-      console.log('loginInput', loginInput);
+    login: async (_, { loginInput }) => {
+      await loginUser(loginInput);
+
       return {
         done: true,
       };
