@@ -1,12 +1,15 @@
 import { AuthModule } from '../generated-types/module-types';
-import { getUserById } from '../services';
+import { createUser } from '../services';
 
 export const authResolvers: AuthModule.Resolvers = {
   Mutation: {
     signUp: async (_, { signUpInput }) => {
-      const user = await getUserById(1);
-      // eslint-disable-next-line no-console
-      console.log('user', user);
+      const created = await createUser(signUpInput);
+
+      if (!created) {
+        throw new Error('Something went wrong while saving data');
+      }
+
       return {
         done: true,
       };
