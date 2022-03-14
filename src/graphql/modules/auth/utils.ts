@@ -1,6 +1,6 @@
 /* eslint-disable prefer-promise-reject-errors */
 import 'dotenv/config';
-import { genSalt, hash } from 'bcrypt';
+import { compare, genSalt, hash } from 'bcrypt';
 
 const saltRounds = Number(process.env.SALT_ROUNDS) || 8;
 
@@ -18,6 +18,23 @@ export function hashPassword(
         }
         resolve([null, hashedPassword]);
       });
+    });
+  });
+}
+
+export function comparePassword({
+  password,
+  hashedPassword,
+}: {
+  password: string;
+  hashedPassword: string;
+}): Promise<[Error | null, boolean]> {
+  return new Promise((resolve, reject) => {
+    compare(password, hashedPassword, (err, result) => {
+      if (err) {
+        reject([err, null]);
+      }
+      resolve([null, result]);
     });
   });
 }

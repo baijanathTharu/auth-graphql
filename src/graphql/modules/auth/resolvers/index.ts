@@ -1,5 +1,5 @@
 import { AuthModule } from '../generated-types/module-types';
-import { createUser } from '../services';
+import { createUser, loginUser } from '../services';
 
 export const authResolvers: AuthModule.Resolvers = {
   Mutation: {
@@ -14,9 +14,9 @@ export const authResolvers: AuthModule.Resolvers = {
         done: true,
       };
     },
-    login: (_, { loginInput }) => {
-      // eslint-disable-next-line no-console
-      console.log('loginInput', loginInput);
+    login: async (_, { loginInput }) => {
+      await loginUser(loginInput);
+
       return {
         done: true,
       };

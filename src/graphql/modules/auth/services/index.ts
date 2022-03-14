@@ -1,6 +1,10 @@
-import { InputMaybe, SignUpInput } from '~/src/graphql/generated-types/graphql';
+import {
+  InputMaybe,
+  LoginInput,
+  SignUpInput,
+} from '~/src/graphql/generated-types/graphql';
 import { db } from '~/src/lib';
-import { hashPassword } from '../utils';
+import { comparePassword, hashPassword } from '../utils';
 
 export function getUserById(id: number) {
   return db.user.findFirst({
@@ -29,4 +33,37 @@ export async function createUser(
       password: hashedPassword,
     },
   });
+}
+
+export async function loginUser(
+  loginInput: InputMaybe<LoginInput> | undefined
+) {
+  if (!loginInput) {
+    throw new Error('loginInput is required');
+  }
+
+  const { email, password } = loginInput;
+
+  const user = await db.user.findUnique({
+    where: { email },
+  });
+
+  if (!user) {
+    throw new Error('User not found');
+  }
+
+  const [err, isCorrect] = await comparePassword({
+    password,
+    hashedPassword: user.password,
+  });
+
+  if (err) {
+    throw new Error('Something went wrong while logging in');
+  }
+
+  if (!isCorrect) {
+    throw new Error('Wrong password or email');
+  }
+
+  return user;
 }
