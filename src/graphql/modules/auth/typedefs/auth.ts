@@ -6,6 +6,12 @@ export const authTypedefs = gql`
     login(loginInput: LoginInput): AuthPayload!
   }
 
+  type Query {
+    me: UserWithoutPassword!
+    # rotate refresh token - old token is passed in the header
+    newToken: AuthPayload!
+  }
+
   input SignUpInput {
     email: String!
     name: String!
