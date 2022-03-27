@@ -9,6 +9,12 @@ export const userTypedefs = gql`
     password: String!
   }
 
+  type UserWithoutPassword {
+    id: Int!
+    name: String
+    email: String!
+  }
+
   type Query {
     users: [User!]!
   }

@@ -1,9 +1,13 @@
 import 'dotenv/config';
 import express, { Application, Request, Response } from 'express';
+import cookieParser from 'cookie-parser';
 import { graphQLServer } from './graphql';
 
 const app: Application = express();
 const port = process.env.PORT || 5000;
+
+// cookie parser
+app.use(cookieParser());
 
 app.use('/rest', (req: Request, res: Response) => {
   res.status(200).send({ data: 'Hello World!' });

@@ -67,3 +67,54 @@ export async function loginUser(
 
   return user;
 }
+
+type CreateTokenInput = {
+  userId: number;
+  refreshToken: string;
+};
+
+export function createToken(createTokenInput: CreateTokenInput) {
+  return db.loginToken.create({
+    data: {
+      userId: createTokenInput.userId,
+      refreshToken: createTokenInput.refreshToken,
+    },
+  });
+}
+
+export async function isTokenRevoked(token: string) {
+  const loginToken = await db.loginToken.findFirst({
+    where: {
+      refreshToken: token,
+    },
+  });
+
+  return !!loginToken?.isRevokedBy;
+}
+
+export async function revokeTokenInDb({
+  token,
+  isRevokedBy,
+}: {
+  token: string;
+  isRevokedBy: number;
+}) {
+  const loginToken = await db.loginToken.findFirst({
+    where: {
+      refreshToken: token,
+    },
+  });
+
+  if (!loginToken) {
+    throw new Error('Token not found');
+  }
+
+  return db.loginToken.update({
+    where: {
+      id: loginToken.id,
+    },
+    data: {
+      isRevokedBy,
+    },
+  });
+}

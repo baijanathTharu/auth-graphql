@@ -2,8 +2,14 @@ import { gql } from 'graphql-modules';
 
 export const authTypedefs = gql`
   type Mutation {
-    signUp(signUpInput: SignUpInput): AuthPayload!
+    signUp(signUpInput: SignUpInput): SignUpPayload!
     login(loginInput: LoginInput): AuthPayload!
+  }
+
+  type Query {
+    me: UserWithoutPassword!
+    # rotate refresh token - old token is passed in the header
+    newToken: AuthPayload!
   }
 
   input SignUpInput {
@@ -18,6 +24,12 @@ export const authTypedefs = gql`
   }
 
   type AuthPayload {
+    done: Boolean!
+    accessToken: String!
+    refreshToken: String!
+  }
+
+  type SignUpPayload {
     done: Boolean!
   }
 `;
