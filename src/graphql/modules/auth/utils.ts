@@ -2,7 +2,7 @@
 import 'dotenv/config';
 import { compare, genSalt, hash } from 'bcryptjs';
 import { sign, verify } from 'jsonwebtoken';
-import { Response } from 'express';
+import { ServerResponse } from 'http';
 
 const saltRounds = Number(process.env.SALT_ROUNDS) || 8;
 const tokenSecret = process.env.TOKEN_SECRET || 'secret';
@@ -74,21 +74,23 @@ export async function verifyToken({ token }: { token: string }) {
   }
 }
 
-export function setCookie({
+export function setCookies({
   res,
   cookieData,
-  cookieName,
-  maxAge = 15 * 60 * 1000, // 15 minutes
 }: {
-  res: Response;
-  cookieData: string;
-  cookieName: string;
-  maxAge?: number;
+  res: ServerResponse;
+  cookieData: Array<{
+    cookieName: string;
+    cookieValue: string;
+    maxAge: number;
+  }>;
 }) {
-  res.cookie(cookieName, `Bearer ${cookieData}`, {
-    httpOnly: true,
-    maxAge,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
+  res.writeHead(200, {
+    'Set-Cookie': cookieData.map(
+      ({ cookieName, cookieValue, maxAge }) =>
+        `${cookieName}: ${cookieValue}; Max-Age=${maxAge}; HttpOnly; SameSite=lax; Secure=${
+          process.env.NODE_ENV === 'production'
+        };`
+    ),
   });
 }

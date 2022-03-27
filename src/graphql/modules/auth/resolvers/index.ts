@@ -8,7 +8,7 @@ import {
   loginUser,
   revokeTokenInDb,
 } from '../services';
-import { generateTokens, setCookie, verifyToken } from '../utils';
+import { generateTokens, setCookies, verifyToken } from '../utils';
 
 export const authResolvers: AuthModule.Resolvers = {
   Query: {
@@ -64,20 +64,20 @@ export const authResolvers: AuthModule.Resolvers = {
       // revoken old token
       await revokeTokenInDb({ token: oldToken, isRevokedBy: newToken.id });
 
-      // set new access token cookie
-      setCookie({
-        res,
-        cookieData: accessToken,
-        cookieName: 'access-token',
-        maxAge: token.ACCESS_TOKEN_AGE as number,
-      });
-      // set new refresh token cookie
-      setCookie({
-        res,
-        cookieData: newRefreshToken,
-        cookieName: 'refresh-token',
-        maxAge: token.REFRESH_TOKEN_AGE as number,
-      });
+      const cookieData = [
+        {
+          cookieName: 'access-token',
+          cookieValue: `Bearer ${accessToken}`,
+          maxAge: token.ACCESS_TOKEN_AGE as number,
+        },
+        {
+          cookieName: 'refresh-token',
+          cookieValue: `Bearer ${newRefreshToken}`,
+          maxAge: token.REFRESH_TOKEN_AGE as number,
+        },
+      ];
+
+      setCookies({ res, cookieData });
 
       return {
         done: true,
@@ -118,20 +118,20 @@ export const authResolvers: AuthModule.Resolvers = {
           refreshToken,
         });
 
-        // set cookie
-        setCookie({
-          res,
-          cookieData: accessToken,
-          cookieName: 'access-token',
-          maxAge: token.ACCESS_TOKEN_AGE as number,
-        });
-        setCookie({
-          res,
-          cookieData: refreshToken,
-          cookieName: 'refresh-token',
-          maxAge: token.REFRESH_TOKEN_AGE as number,
-        });
+        const cookieData = [
+          {
+            cookieName: 'access-token',
+            cookieValue: `Bearer ${accessToken}`,
+            maxAge: token.ACCESS_TOKEN_AGE as number,
+          },
+          {
+            cookieName: 'refresh-token',
+            cookieValue: `Bearer ${refreshToken}`,
+            maxAge: token.REFRESH_TOKEN_AGE as number,
+          },
+        ];
 
+        setCookies({ res, cookieData });
         return {
           done: true,
         };
