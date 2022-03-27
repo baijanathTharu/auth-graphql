@@ -1,4 +1,3 @@
-import { token } from '~/src/config';
 import { AuthModule } from '../generated-types/module-types';
 import {
   createToken,
@@ -8,11 +7,12 @@ import {
   loginUser,
   revokeTokenInDb,
 } from '../services';
-import { generateTokens, setCookies, verifyToken } from '../utils';
+import { generateTokens, verifyToken } from '../utils';
 
 export const authResolvers: AuthModule.Resolvers = {
   Query: {
     me: async (_, arg, { userId }) => {
+      console.log('userId', userId);
       if (!userId) {
         throw new Error('User not authenticated');
       }
@@ -28,7 +28,7 @@ export const authResolvers: AuthModule.Resolvers = {
       return rest;
     },
 
-    newToken: async (_, _arg, { req, res }) => {
+    newToken: async (_, _arg, { req }) => {
       // verfify refresh token
       const refreshTokenWithBearer =
         req.cookies['refresh-token'] ||
@@ -64,23 +64,10 @@ export const authResolvers: AuthModule.Resolvers = {
       // revoken old token
       await revokeTokenInDb({ token: oldToken, isRevokedBy: newToken.id });
 
-      const cookieData = [
-        {
-          cookieName: 'access-token',
-          cookieValue: `Bearer ${accessToken}`,
-          maxAge: token.ACCESS_TOKEN_AGE as number,
-        },
-        {
-          cookieName: 'refresh-token',
-          cookieValue: `Bearer ${newRefreshToken}`,
-          maxAge: token.REFRESH_TOKEN_AGE as number,
-        },
-      ];
-
-      setCookies({ res, cookieData });
-
       return {
         done: true,
+        accessToken,
+        refreshToken: newRefreshToken,
       };
     },
   },
@@ -105,7 +92,7 @@ export const authResolvers: AuthModule.Resolvers = {
         throw new Error(e as string);
       }
     },
-    login: async (_, { loginInput }, { res }) => {
+    login: async (_, { loginInput }) => {
       try {
         const user = await loginUser(loginInput);
 
@@ -118,22 +105,10 @@ export const authResolvers: AuthModule.Resolvers = {
           refreshToken,
         });
 
-        const cookieData = [
-          {
-            cookieName: 'access-token',
-            cookieValue: `Bearer ${accessToken}`,
-            maxAge: token.ACCESS_TOKEN_AGE as number,
-          },
-          {
-            cookieName: 'refresh-token',
-            cookieValue: `Bearer ${refreshToken}`,
-            maxAge: token.REFRESH_TOKEN_AGE as number,
-          },
-        ];
-
-        setCookies({ res, cookieData });
         return {
           done: true,
+          accessToken,
+          refreshToken,
         };
       } catch (e) {
         console.log(e);

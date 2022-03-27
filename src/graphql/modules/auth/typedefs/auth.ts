@@ -2,7 +2,7 @@ import { gql } from 'graphql-modules';
 
 export const authTypedefs = gql`
   type Mutation {
-    signUp(signUpInput: SignUpInput): AuthPayload!
+    signUp(signUpInput: SignUpInput): SignUpPayload!
     login(loginInput: LoginInput): AuthPayload!
   }
 
@@ -24,6 +24,12 @@ export const authTypedefs = gql`
   }
 
   type AuthPayload {
+    done: Boolean!
+    accessToken: String!
+    refreshToken: String!
+  }
+
+  type SignUpPayload {
     done: Boolean!
   }
 `;
