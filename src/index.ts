@@ -2,7 +2,7 @@ import 'dotenv/config';
 import express, { Application, Request, Response } from 'express';
 import cookieParser from 'cookie-parser';
 import { graphQLServer } from './graphql';
-import { getNewTokens } from './graphql/modules/auth/utils';
+import { getNewTokens } from './rest/me';
 
 const app: Application = express();
 const port = process.env.PORT || 5000;
