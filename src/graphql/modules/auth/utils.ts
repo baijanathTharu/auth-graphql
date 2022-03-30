@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 /* eslint-disable prefer-promise-reject-errors */
 import 'dotenv/config';
 import { compare, genSalt, hash } from 'bcryptjs';
@@ -47,10 +48,10 @@ export function generateTokens({ userId }: { userId: number }): {
   refreshToken: string;
 } {
   const accessToken = sign({ userId }, tokenSecret, {
-    expiresIn: '1m',
+    expiresIn: process.env.ACCESS_TOKEN_AGE || '15m',
   });
   const refreshToken = sign({ userId }, tokenSecret, {
-    expiresIn: '2m',
+    expiresIn: process.env.REFRESH_TOKEN_AGE || '7d',
   });
   return {
     accessToken,
