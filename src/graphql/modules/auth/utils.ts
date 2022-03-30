@@ -1,8 +1,11 @@
+/* eslint-disable import/no-cycle */
 /* eslint-disable prefer-promise-reject-errors */
 import 'dotenv/config';
 import { compare, genSalt, hash } from 'bcryptjs';
 import { sign, verify } from 'jsonwebtoken';
 import { ServerResponse } from 'http';
+import { Request, Response } from 'express';
+import { createToken, isTokenRevoked, revokeTokenInDb } from './services';
 
 const saltRounds = Number(process.env.SALT_ROUNDS) || 8;
 const tokenSecret = process.env.TOKEN_SECRET || 'secret';
@@ -47,10 +50,10 @@ export function generateTokens({ userId }: { userId: number }): {
   refreshToken: string;
 } {
   const accessToken = sign({ userId }, tokenSecret, {
-    expiresIn: '1m',
+    expiresIn: process.env.ACCESS_TOKEN_AGE || '15m',
   });
   const refreshToken = sign({ userId }, tokenSecret, {
-    expiresIn: '2m',
+    expiresIn: process.env.REFRESH_TOKEN_AGE || '7d',
   });
   return {
     accessToken,
@@ -93,4 +96,70 @@ export function setCookies({
         };`
     ),
   });
+}
+
+// eslint-disable-next-line consistent-return
+export async function getNewTokens(req: Request, res: Response) {
+  try {
+    // verfify refresh token
+    const refreshTokenWithBearer =
+      req.cookies['refresh-token'] ||
+      (req.headers['refresh-token'] as string) ||
+      '';
+    const oldToken = refreshTokenWithBearer.split(' ')[1];
+
+    if (!oldToken) {
+      console.log('req');
+      return res.status(400).send({
+        message: 'No refresh token provided',
+      });
+    }
+
+    // find if the refresh token is revoked
+    const isRevoked = await isTokenRevoked(oldToken);
+    if (isRevoked) {
+      return res.status(400).send({
+        message: 'Refresh token is revoked',
+      });
+    }
+
+    const decodedRefreshToken = await verifyToken({
+      token: oldToken,
+    });
+
+    if (!decodedRefreshToken.userId) {
+      return res.status(400).send({
+        message: 'Invalid refresh token',
+      });
+    }
+
+    // generate new tokens
+    const { accessToken, refreshToken: newRefreshToken } = generateTokens({
+      userId: decodedRefreshToken.userId as number,
+    });
+
+    // save new refresh token to db
+    const newToken = await createToken({
+      userId: decodedRefreshToken.userId as number,
+      refreshToken: newRefreshToken,
+    });
+
+    // revoken old token
+    await revokeTokenInDb({ token: oldToken, isRevokedBy: newToken.id });
+
+    return res.json({
+      done: true,
+      accessToken,
+      // 15 minutes
+      accessTokenExpiresIn: new Date().getTime() + 15 * 60 * 1000,
+      refreshToken: newRefreshToken,
+      // 7 days
+      refreshTokenExpiresIn: new Date().getTime() + 7 * 24 * 60 * 60 * 1000,
+    });
+  } catch (e: any) {
+    console.log('e', e);
+    res.status(400).send({
+      message: e.message,
+    });
+  }
 }

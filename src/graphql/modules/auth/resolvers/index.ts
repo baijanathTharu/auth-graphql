@@ -12,7 +12,6 @@ import { generateTokens, verifyToken } from '../utils';
 export const authResolvers: AuthModule.Resolvers = {
   Query: {
     me: async (_, arg, { userId }) => {
-      console.log('userId', userId);
       if (!userId) {
         throw new Error('User not authenticated');
       }
@@ -67,7 +66,11 @@ export const authResolvers: AuthModule.Resolvers = {
       return {
         done: true,
         accessToken,
+        // 15 minutes
+        accessTokenExpiresIn: new Date().getTime() + 15 * 60 * 1000,
         refreshToken: newRefreshToken,
+        // 7 days
+        refreshTokenExpiresIn: new Date().getTime() + 7 * 24 * 60 * 60 * 1000,
       };
     },
   },

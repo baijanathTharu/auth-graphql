@@ -27,6 +27,8 @@ export const authTypedefs = gql`
     done: Boolean!
     accessToken: String!
     refreshToken: String!
+    accessTokenExpiresIn: Int
+    refreshTokenExpiresIn: Int
   }
 
   type SignUpPayload {
