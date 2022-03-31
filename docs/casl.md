@@ -22,3 +22,30 @@ An example with a health clinic
 
 1. Nurse cannot write prescription.
 2. Nurse can attend patients assigned to him/her.
+
+### Patient
+
+1. Patient cannot attend other patient.
+2. Patient cannot write prescriptions.
+
+## Simple CASL Ability for blogging system
+
+```js
+import { User, Post, Prisma } from '@prisma/client';
+import { AbilityClass, AbilityBuilder, subject } from '@casl/ability';
+import { PrismaAbility, Subjects } from '@casl/prisma';
+
+type AppAbility = PrismaAbility<[string, Subjects<{
+  User: User,
+  Post: Post
+}>]>;
+const AppAbility = PrismaAbility as AbilityClass<AppAbility>;
+const { can, cannot, build } = new AbilityBuilder(AppAbility);
+
+can('read', 'Post', { authorId: 1 });
+cannot('read', 'Post', { title: { startsWith: '[WIP]:' } });
+
+const ability = build();
+ability.can('read', 'Post');
+ability.can('read', subject('Post', { title: '...', authorId: 1 })));
+```
