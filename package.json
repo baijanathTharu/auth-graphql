@@ -14,7 +14,11 @@
     "prepare": "husky install",
     "generate": "graphql-codegen --config codegen.yml",
     "migrate:dev": "prisma migrate dev",
-    "release": "standard-version"
+    "release": "standard-version",
+    "seed": "prisma db seed"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
   },
   "author": "baijanathTharu",
   "license": "MIT",
