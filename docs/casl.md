@@ -7,9 +7,42 @@ An example with a health clinic
 ## Entities
 
 1. Doctors
+
+```ts
+interface Doctor {
+  id: number;
+  name: string;
+}
+```
+
 2. Nurses
+
+```ts
+interface Nurse {
+  id: number;
+  name: string;
+}
+```
+
 3. Patients
+
+```ts
+interface Patient {
+  id: number;
+  name: string;
+}
+```
+
 4. Prescriptions
+
+```ts
+interface Prescription {
+  id: number;
+  prescribedTo: number; // patient id
+  prescribedBy: number; // doctor id
+  prescription: string;
+}
+```
 
 ## Access Management
 
