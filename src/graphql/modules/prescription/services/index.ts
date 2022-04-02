@@ -1,4 +1,3 @@
-import { ForbiddenError } from '@casl/ability';
 import { Role } from '@prisma/client';
 import { doctorAbility } from '~/src/abilities';
 import { CreatePrescriptionInput } from '~/src/graphql/generated-types/graphql';
@@ -11,7 +10,7 @@ export async function createPrescription(
   const ability = doctorAbility(userRole);
 
   if (!ability.can('write', 'Prescription')) {
-    throw ForbiddenError.from(ability);
+    throw new Error('You are not allowed to create a prescription');
   }
 
   const prescription = await db.prescription.create({
