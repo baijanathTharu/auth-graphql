@@ -118,3 +118,19 @@ export async function revokeTokenInDb({
     },
   });
 }
+
+export const getUserRoles = async (userId: number) => {
+  const user = await getUserById(userId);
+
+  if (!user) {
+    throw new Error('User not found');
+  }
+
+  const roles = await db.userRole.findMany({
+    where: {
+      userId,
+    },
+  });
+
+  return roles.map(({ role }) => role);
+};
