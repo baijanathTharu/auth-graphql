@@ -17,6 +17,13 @@ interface Doctor {
 
 2. Nurses
 
+```ts
+interface Nurse {
+  id: number;
+  name: string;
+}
+```
+
 3. Patients
 4. Prescriptions
 
