@@ -25,6 +25,14 @@ interface Nurse {
 ```
 
 3. Patients
+
+```ts
+interface Patient {
+  id: number;
+  name: string;
+}
+```
+
 4. Prescriptions
 
 ## Access Management
