@@ -7,7 +7,16 @@ An example with a health clinic
 ## Entities
 
 1. Doctors
+
+```ts
+interface Doctor {
+  id: number;
+  name: string;
+}
+```
+
 2. Nurses
+
 3. Patients
 4. Prescriptions
 
