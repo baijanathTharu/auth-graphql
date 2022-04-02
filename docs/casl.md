@@ -82,3 +82,49 @@ const ability = build();
 ability.can('read', 'Post');
 ability.can('read', subject('Post', { title: '...', authorId: 1 })));
 ```
+
+## Ability for doctor
+
+### Define ability
+
+```ts
+export const doctorAbility = (userRoles: Role[]) => {
+  const Ability = PrismaAbility as AbilityClass<AppAbility>;
+  const { can, build } = new AbilityBuilder(Ability);
+
+  if (userRoles.includes(Role.DOCTOR)) {
+    can('write', 'Prescription');
+  }
+
+  return build();
+};
+```
+
+### Usage
+
+```ts
+export async function createPrescription(
+  input: CreatePrescriptionInput,
+  userRole: Role[]
+) {
+  const ability = doctorAbility(userRole);
+
+  if (!ability.can('write', 'Prescription')) {
+    throw new Error('You are not allowed to create a prescription');
+  }
+
+  const prescription = await db.prescription.create({
+    data: {
+      prescription: input.prescription,
+      prescribedById: input.prescribedBy,
+      prescribedToId: input.prescribedTo,
+    },
+    include: {
+      prescribedBy: true,
+      prescribedTo: true,
+    },
+  });
+
+  return prescription;
+}
+```
