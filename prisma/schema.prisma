@@ -54,3 +54,10 @@ model Prescription {
 
   @@map("prescriptions")
 }
+
+enum Role {
+  PATIENT
+  DOCTOR
+  Nurse
+  User
+}
