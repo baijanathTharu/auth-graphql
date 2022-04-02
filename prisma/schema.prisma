@@ -18,7 +18,10 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
-  loginTokens LoginToken[]
+  loginTokens    LoginToken[]
+  prescribedToMe Prescription[] @relation("patient")
+  prescribedByMe Prescription[] @relation("doctor")
+
   @@map("users")
 }
 
@@ -33,4 +36,21 @@ model LoginToken {
   userId      Int
 
   @@map("login_tokens")
+}
+
+model Prescription {
+  id Int @id @default(autoincrement())
+
+  prescribedTo   User @relation("patient", fields: [prescribedToId], references: [id])
+  prescribedToId Int
+
+  prescribedBy   User @relation("doctor", fields: [prescribedById], references: [id])
+  prescribedById Int
+
+  prescription String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  @@map("prescriptions")
 }
