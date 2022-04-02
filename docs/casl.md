@@ -35,6 +35,15 @@ interface Patient {
 
 4. Prescriptions
 
+```ts
+interface Prescription {
+  id: number;
+  prescribedTo: number; // patient id
+  prescribedBy: number; // doctor id
+  prescription: string;
+}
+```
+
 ## Access Management
 
 ### Doctor
