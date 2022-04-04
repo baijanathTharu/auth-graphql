@@ -14,12 +14,15 @@ type AppAbility = PrismaAbility<
   ]
 >;
 
-export const doctorAbility = (userRoles: Role[]) => {
+export const doctorAbility = (userRoles: Role[], userId: number) => {
   const Ability = PrismaAbility as AbilityClass<AppAbility>;
   const { can, build } = new AbilityBuilder(Ability);
 
   if (userRoles.includes(Role.DOCTOR)) {
     can('write', 'Prescription');
+    can('read', 'Prescription', {
+      prescribedById: userId,
+    });
   }
 
   return build();

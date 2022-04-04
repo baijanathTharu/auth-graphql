@@ -5,9 +5,10 @@ import { db } from '~/src/lib';
 
 export async function createPrescription(
   input: CreatePrescriptionInput,
-  userRole: Role[]
+  userRole: Role[],
+  userId: number
 ) {
-  const ability = doctorAbility(userRole);
+  const ability = doctorAbility(userRole, userId);
 
   if (!ability.can('write', 'Prescription')) {
     throw new Error('You are not allowed to create a prescription');

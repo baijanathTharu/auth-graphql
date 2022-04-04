@@ -11,7 +11,7 @@ export const resolvers: PrescriptionModule.Resolvers = {
 
       const roles = await getUserRoles(userId);
 
-      const created = await createPrescription(input, roles);
+      const created = await createPrescription(input, roles, userId);
 
       return { data: created };
     },
