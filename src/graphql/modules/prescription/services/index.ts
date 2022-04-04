@@ -28,3 +28,27 @@ export async function createPrescription(
 
   return prescription;
 }
+
+export async function getPrescription(
+  id: number,
+  userId: number,
+  userRole: Role[]
+) {
+  const ability = doctorAbility(userRole, userId);
+
+  if (!ability.can('write', 'Prescription')) {
+    throw new Error('Not found');
+  }
+
+  const prescription = await db.prescription.findFirst({
+    where: {
+      id,
+    },
+    include: {
+      prescribedBy: true,
+      prescribedTo: true,
+    },
+  });
+
+  return prescription;
+}
