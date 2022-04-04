@@ -128,3 +128,28 @@ export async function createPrescription(
   return prescription;
 }
 ```
+
+## Creating Prescription By doctor
+
+If user has not DOCTOR role, he will be forbidden to create prescription.
+
+```graphql
+mutation createPrescription {
+  createPrescription(
+    input: { prescribedTo: 3, prescribedBy: 4, prescription: "one" }
+  ) {
+    data {
+      id
+      prescribedTo {
+        id
+        name
+      }
+      prescribedBy {
+        id
+        name
+      }
+      prescription
+    }
+  }
+}
+```
