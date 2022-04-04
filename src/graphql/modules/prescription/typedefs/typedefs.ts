@@ -7,6 +7,10 @@ export const typedefs = gql`
     ): CreatePrescriptionPayload!
   }
 
+  type Query {
+    prescription(id: Int!): Prescription!
+  }
+
   type Prescription {
     id: Int!
     prescribedTo: User!

@@ -2,6 +2,10 @@ type Mutation {
   createPrescription(input: CreatePrescriptionInput): CreatePrescriptionPayload!
 }
 
+type Query {
+  prescription(id: Int!): Prescription!
+}
+
 type Prescription {
   id: Int!
   prescribedTo: User!
