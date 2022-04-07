@@ -156,7 +156,7 @@ mutation createPrescription {
 
 ## Querying for prescription
 
-If the doctor has not prescribed the prescription, he will be forbidden to view the prescription.
+- If the doctor has not prescribed the prescription, he will be forbidden to view the prescription.
 
 ```graphql
 query prescription {
@@ -174,3 +174,6 @@ query prescription {
   }
 }
 ```
+
+- A nurse should be able to see the prescription of the patient assigned to her
+  **[ WIP ]**
