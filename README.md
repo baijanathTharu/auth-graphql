@@ -68,3 +68,24 @@ mutation createPrescription {
   }
 }
 ```
+
+### Querying for prescription
+
+- If the doctor has not prescribed the prescription, he will be forbidden to view the prescription.
+
+```graphql
+query prescription {
+  prescription(id: 1) {
+    id
+    prescribedTo {
+      id
+      name
+    }
+    prescribedBy {
+      id
+      name
+    }
+    prescription
+  }
+}
+```
