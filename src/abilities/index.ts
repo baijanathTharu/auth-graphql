@@ -1,1 +1,1 @@
-export * from './doctorAbility';
+export * from './appAbility';

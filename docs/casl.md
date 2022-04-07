@@ -88,7 +88,7 @@ ability.can('read', subject('Post', { title: '...', authorId: 1 })));
 ### Define ability
 
 ```ts
-export const doctorAbility = (userRoles: Role[]) => {
+export const appAbility = (userRoles: Role[]) => {
   const Ability = PrismaAbility as AbilityClass<AppAbility>;
   const { can, build } = new AbilityBuilder(Ability);
 
@@ -107,7 +107,7 @@ export async function createPrescription(
   input: CreatePrescriptionInput,
   userRole: Role[]
 ) {
-  const ability = doctorAbility(userRole);
+  const ability = appAbility(userRole);
 
   if (!ability.can('write', 'Prescription')) {
     throw new Error('You are not allowed to create a prescription');

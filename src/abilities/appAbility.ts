@@ -14,7 +14,7 @@ type AppAbility = PrismaAbility<
   ]
 >;
 
-export const doctorAbility = (userRoles: Role[], userId: number) => {
+export const appAbility = (userRoles: Role[], userId: number) => {
   const Ability = PrismaAbility as AbilityClass<AppAbility>;
   const { can, build } = new AbilityBuilder(Ability);
 

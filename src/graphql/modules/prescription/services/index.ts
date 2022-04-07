@@ -1,5 +1,5 @@
 import { Role } from '@prisma/client';
-import { doctorAbility } from '~/src/abilities';
+import { appAbility } from '~/src/abilities';
 import { CreatePrescriptionInput } from '~/src/graphql/generated-types/graphql';
 import { db } from '~/src/lib';
 
@@ -8,7 +8,7 @@ export async function createPrescription(
   userRole: Role[],
   userId: number
 ) {
-  const ability = doctorAbility(userRole, userId);
+  const ability = appAbility(userRole, userId);
 
   if (!ability.can('write', 'Prescription')) {
     throw new Error('You are not allowed to create a prescription');
@@ -34,7 +34,7 @@ export async function getPrescription(
   userId: number,
   userRole: Role[]
 ) {
-  const ability = doctorAbility(userRole, userId);
+  const ability = appAbility(userRole, userId);
 
   if (!ability.can('write', 'Prescription')) {
     throw new Error('Not found');
